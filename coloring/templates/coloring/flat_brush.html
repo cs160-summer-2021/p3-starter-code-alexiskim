@@ -6,11 +6,16 @@
 
     <script type="text/javascript" src="{% static 'coloring/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style type='text/css'>
+        body {
+            margin: 0;
+        }
         #canvas {
             border:1px solid black;
             padding-left: 0;
 		    padding-right: 0;
+            margin-top: 4%;
 		    margin-left: auto;
 		    margin-right: auto;
 		    display: block;
@@ -24,6 +29,24 @@
 			top: 0;
 		}
 
+        #top-bar {
+            height: 10%;
+            width: 100%;
+            background-color: darkgray;
+        }
+
+        .material-icons {
+            margin-top: 10px;
+            color: rgb(243, 243, 243);
+        }
+        #color-palette {
+			width: 300px;
+			background-color: #f1f1f1;
+			display: flex;
+			flex-wrap: wrap;
+			position: absolute;
+			top: 0;
+		}
     </style>
 </head>
 <body>
@@ -56,11 +79,22 @@
             path.closed = true;
             path.smooth();
         }
+    </script>
+    
+    <script type="text/javascript" canvas="canvas">
 
-        
     </script>
 
-    <canvas id="canvas" width="750" height="750"></canvas>
+    <div id="top-bar">
+        <i class="material-icons" id="home" style="font-size:60px; margin-left: 30px;">home</i>
+        <i class="material-icons" style="font-size:60px; margin-left: 20px;">menu</i>
+        <i class="material-icons" style="font-size:60px; margin-left: 800px;">undo</i>
+        <i class="material-icons" style="font-size:60px; margin-left: 20px;">redo</i>
+        <i class="material-icons" style="font-size:60px; margin-left: 20px; color: rgb(24, 24, 24);">brush</i>
+        <i class="material-icons" style="font-size:60px;margin-left: 60px;">color_lens</i>
+    </div>
+    <canvas id="canvas" width="1000" height="700"></canvas>
     <div id="color-palette"></div>
+
 </body>
 </html>
