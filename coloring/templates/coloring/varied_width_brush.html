@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Varied Width Brush</title>
+
+    <script type="text/javascript" src="{% static 'coloring/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
+    <style type='text/css'>
+        #canvas {
+            border:1px solid black;
+            padding-left: 0;
+		    padding-right: 0;
+		    margin-left: auto;
+		    margin-right: auto;
+		    display: block;
+        }
+        #color-palette {
+			width: 300px;
+			background-color: #f1f1f1;
+			display: flex;
+			flex-wrap: wrap;
+			position: absolute;
+			top: 0;
+		}
+
+    </style>
+</head>
+<body>
+    <script type="text/paperscript" canvas="canvas">
+
+        tool.minDistance = 20;
+        tool.maxDistance = 40;
+
+        var path;
+
+        function onMouseDown(event) {
+            path = new Path();
+            //path.fillColor = {
+            //    hue: Math.random() * 360,
+            //    saturation: 1,
+            //    brightness: 1
+            //}; 
+            path.fillColor = 'black';
+
+            path.add(event.point);
+        }
+
+        function onMouseDrag(event) {
+            var step = event.delta;
+            step.angle += 90;
+            
+            var top = event.middlePoint + step;
+            var bottom = event.middlePoint - step;
+            
+            path.add(top);
+            path.insert(0, bottom);
+            path.smooth();
+        }
+
+        function onMouseUp(event) {
+            path.add(event.point);
+            path.closed = true;
+            path.smooth();
+            path.simplify();
+        }
+
+        
+    </script>
+
+    <canvas id="canvas" width="750" height="750"></canvas>
+    <div id="color-palette"></div>
+</body>
+</html>
