@@ -6,8 +6,11 @@ def index(request):
 def new_interaction(request):
     return render(request, 'coloring/new_interaction.html')
 
-def varied_width_brush(request):
-    return render(request, 'coloring/varied_width_brush.html')
+def pencil_brush(request):
+    return render(request, 'coloring/pencil_brush.html')
 
 def flat_brush(request):
     return render(request, 'coloring/flat_brush.html')
+
+def home(request):
+    return render(request, 'coloring/home.html')
