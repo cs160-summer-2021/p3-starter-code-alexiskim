@@ -11,7 +11,7 @@
         body {
             margin: 0;
         }
-        #canvas {
+        #myCanvas {
             border:1px solid black;
             padding-left: 0;
 		    padding-right: 0;
@@ -20,14 +20,6 @@
 		    margin-right: auto;
 		    display: block;
         }
-        #color-palette {
-			width: 300px;
-			background-color: #f1f1f1;
-			display: flex;
-			flex-wrap: wrap;
-			position: absolute;
-			top: 0;
-		}
 
         #top-bar {
             height: 10%;
@@ -39,30 +31,107 @@
             margin-top: 10px;
             color: rgb(243, 243, 243);
         }
+        #color-palette {
+			width: 300px;
+			background-color: #f1f1f1;
+			display: flex;
+			flex-wrap: wrap;
+			position: absolute;
+			top: 0;
+		}
+        .swatch {
+			width: 24px;
+			height: 24px;
+			-moz-border-radius: 12px;
+			-webkit-border-radius: 12px;
+			border-radius: 12px;
+			margin: 3px;
+		}
     </style>
 </head>
 <body>
     
-    <script type="text/paperscript" canvas="canvas">
+    <script type="text/javascript" canvas="myCanvas">
+		window.onload = function() {
+			var canvas = document.getElementById('myCanvas');
 
-        tool.fixedDistance = 2;
-        var path;
+			// coloring page
+			var mandala = {
+				item: null,
+				lastClicked: null,
+				filePath: '/static/coloring/images/mandala-freepik.svg'
+			};
 
-        function onMouseDown(event) {
-            path = new Path();
-            path.strokewidth = 5;
-            path.strokeColor = 'black';
-        }
+			// color palette
+			var cp = {
+				history: ["#000000"], // black selected by default
+				options: [],
+				$container: $('#color-palette')
+			}
 
-        function onMouseDrag(event) {
-            path.add(event.point);
-        }
+			function myCustomInteraction() {
+                var tool = new paper.Tool()
+                tool.minDistance = 1;
+                var path;
+                tool.onMouseDown = function(event) {
+                    path = new paper.Path();
+                    path.strokeWidth = 2;
+                    path.strokeColor = cp.history[cp.history.length - 1];
+                }
+                tool.onMouseDrag = function(event) {
+                    path.add(event.point);
+                }
+			}
 
-        function onMouseUp(event) {
-            path.smooth();
-        }
+			// create a color palette with the given colors
+			function createColorPalette(colors){
 
-    </script>
+				// create a swatch for each color
+				for (var i = colors.length - 1; i >= 0; i--) {
+					var $swatch = $("<div>").css("background-color", colors[i])
+									   .addClass("swatch");
+					$swatch.click(function(){
+						// add color to the color palette history
+					  	cp.history.push($(this).css("background-color"));
+					});
+					cp.$container.append($swatch);
+				}
+			}
+
+			// loads a set of colors from a json to create a color palette
+			function getColorsCreatePalette(){
+				cp.$container.html(" ");
+				$.getJSON('/static/coloring/vendors/material/material-colors.json', function(colors){
+					var keys = Object.keys(colors);
+					for (var i = keys.length - 1; i >= 0; i--) {
+						cp.options.push(colors[keys[i]][500]);
+					}
+					createColorPalette(cp.options);
+				});
+			}
+
+			function init(custom){
+				paper.setup(canvas);
+				getColorsCreatePalette();
+
+				paper.project.importSVG(mandala.filePath, function(item) {
+					mandala.item = item._children["design-freepik"];
+				    paper.project.insertLayer(0,mandala.item);
+
+				    if (custom) {
+				    	myCustomInteraction();
+				    } else {
+				    	myGradientInteraction();
+				    }
+
+				});
+			}
+
+			// Set up the mandala interactivity.
+			init(true);
+		}
+	</script>
+
     <!-- <script type="text/paperscript" canvas="canvas">
 
         tool.fixedDistance = 30;
@@ -70,7 +139,8 @@
 
         function onMouseDown(event) {
             path = new Path();
-            path.fillColor = 'black';
+            //path.fillColor = 'black';
+            path.fillColor = cp.history[cp.history.length - 1];
             path.add(event.point);
         }
 
@@ -101,7 +171,7 @@
         <i class="material-icons" style="font-size:60px; margin-left: 20px; color: rgb(24, 24, 24);">brush</i>
         <i class="material-icons" style="font-size:60px;margin-left: 60px;">color_lens</i>
     </div>
-    <canvas id="canvas" width="1000" height="700"></canvas>
+    <canvas id="myCanvas" width="1000" height="700"></canvas>
     <div id="color-palette"></div>
 
 </body>
