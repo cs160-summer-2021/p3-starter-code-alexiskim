@@ -50,9 +50,16 @@
 		}
 
 		/* Brush Dropdown*/
+		.dropdown {
+			position: relative;
+			display: inline-block;
+		}
 		.dropdown-content {
 			display: none;
+			padding: 20px;
   			position: absolute;
+			background-color: rgb(241, 241, 241);
+			
 		}
 
 		/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
@@ -64,8 +71,8 @@
     <script type="text/javascript" canvas="myCanvas">
 		/* When the user clicks on the button,
 		toggle between hiding and showing the dropdown content */
-		function myFunction() {
-		document.getElementById("myDropdown").classList.toggle("show");
+		function showContent() {
+			document.getElementById("myDropdown").classList.toggle("show");
 		}
 
 		// Close the dropdown menu if the user clicks outside of it
@@ -162,49 +169,22 @@
 			init(true);
 		}
 	</script>
-
-    <!-- <script type="text/paperscript" canvas="canvas">
-
-        tool.fixedDistance = 30;
-        var path;
-
-        function onMouseDown(event) {
-            path = new Path();
-            //path.fillColor = 'black';
-            path.fillColor = cp.history[cp.history.length - 1];
-            path.add(event.point);
-        }
-
-        function onMouseDrag(event) {
-            var step = event.delta / 2;
-            step.angle += 90;
-        
-            var top = event.middlePoint + step;
-            var bottom = event.middlePoint - step;
-
-            path.add(top);
-            path.insert(0, bottom);
-            path.smooth();
-        }
-
-        function onMouseUp(event) {
-            path.add(event.point);
-            path.closed = true;
-            path.smooth();
-        }
-    </script> -->
-
+	
     <div id="top-bar">
         <i class="material-icons" id="home" style="font-size:60px; margin-left: 30px;">home</i>
         <i class="material-icons" style="font-size:60px; margin-left: 20px;">menu</i>
         <i class="material-icons" style="font-size:60px; margin-left: 750px;">undo</i>
         <i class="material-icons" style="font-size:60px; margin-left: 30px;">redo</i>
-        <i onclick="myFunction()" class="dropbtn material-icons" style="font-size:60px; margin-left: 20px;">brush</i>
-		<div id="myDropdown" class="dropdown-content">
-			<i class='fas fa-pen' style='font-size:36px'></i>
-			<i class='fas fa-paint-brush' style='font-size:36px'></i>
-			<i class="material-icons" style="font-size:36px">format_color_fill</i>
+
+		<div class="dropdown">
+			<i onclick="showContent()" class="dropbtn material-icons" style="font-size:60px; margin-left: 20px;">brush</i>
+			<div id="myDropdown" class="dropdown-content">
+				<i class='fas fa-pen material-icons' style='font-size:50px'></i>
+				<i class='fas fa-paint-brush material-icons' style='font-size:50px'></i>
+				<i class="material-icons" style="font-size:60px">format_color_fill</i>
+			</div>
 		</div>
+
 		<i class='fas fa-eraser material-icons' style='font-size:45px; margin-top: 0; padding-bottom: 20px;margin-left: 5px'></i>
         <i class="material-icons" style="font-size:60px;margin-left: 30px;">color_lens</i>
     </div>
