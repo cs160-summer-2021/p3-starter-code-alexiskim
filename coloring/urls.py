@@ -6,5 +6,6 @@ urlpatterns = [
     path('new_interaction', views.new_interaction, name='new_interaction'),
     path('pencil_brush', views.pencil_brush, name='pencil_brush'),
     path('flat_brush', views.flat_brush, name='flat_brush'),
+    path('bucket', views.bucket, name='bucket'),
     path('home', views.home, name='home')
 ]

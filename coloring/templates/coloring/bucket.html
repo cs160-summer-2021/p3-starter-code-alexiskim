@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Flat Brush</title>
+    <title>Bucket</title>
 
     <script type="text/javascript" src="{% static 'coloring/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+	<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     
-    <style type='text/css'>
+	<style type='text/css'>
         body {
             margin: 0;
         }
@@ -31,7 +31,7 @@
 
         .material-icons {
             margin-top: 20px;
-            color: rgb(161, 160, 160);
+            color: rgb(161, 160, 160);;
         }
         #color-palette {
 			width: 75%;
@@ -49,8 +49,8 @@
 			margin: 4px;
 		}
 
-        /* Brush Dropdown*/
-        .dropdown {
+		/* Brush Dropdown*/
+		.dropdown {
 			position: relative;
 			display: inline-block;
 		}
@@ -61,6 +61,7 @@
 			background-color: rgb(241, 241, 241);
 			
 		}
+
 		/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 		.show {display:block;}
     </style>
@@ -68,11 +69,10 @@
 <body>
     
     <script type="text/javascript" canvas="myCanvas">
-
-        /* When the user clicks on the button,
+		/* When the user clicks on the button,
 		toggle between hiding and showing the dropdown content */
 		function showContent() {
-		document.getElementById("myDropdown").classList.toggle("show");
+			document.getElementById("myDropdown").classList.toggle("show");
 		}
 
 		// Close the dropdown menu if the user clicks outside of it
@@ -108,34 +108,16 @@
 			}
 
 			function myCustomInteraction() {
-                // var tool = new paper.Tool()
-                // tool.minDistance = 1;
-                // var path;
-                // tool.onMouseDown = function(event) {
-                //     path = new paper.Path();
-                //     path.strokewidth = 5;
-                //     path.strokeColor = cp.history[cp.history.length - 1];
-                // }
-                // tool.onMouseDrag = function(event) {
-                //     path.add(event.point);
-                // }
-                var tool = new paper.Tool()
-                tool.fixedDistance = 100;
-                var path;
-                tool.onMouseDown = function(event) {
-                    path = new paper.Path();
-                    path.strokeWidth = 10;
-                    path.strokeColor = cp.history[cp.history.length - 1];
-                    path.add(event.point);
-                    
-                }
-                tool.onMouseDrag = function(event) {
-                    path.add(event.point);
-                    path.smooth();
-                }
-                tool.onMouseUp = function(event) {
-                    // path.smooth();
-                }
+                var tool = new paper.Tool();
+
+				tool.onMouseDown = function (event) {
+				    var hit = mandala.item.hitTest(event.point, { tolerance: 10, fill: true });
+				    if (hit) {
+				    		// Color pallette keeps track of the full history of colors, though we
+				    		// only color in with the most-recent color.
+				        hit.item.fillColor = cp.history[cp.history.length - 1];
+				    }
+				}
 			}
 
 			// create a color palette with the given colors
@@ -186,38 +168,7 @@
 			init(true);
 		}
 	</script>
-
-    <!-- <script type="text/paperscript" canvas="canvas">
-
-        tool.fixedDistance = 30;
-        var path;
-
-        function onMouseDown(event) {
-            path = new Path();
-            //path.fillColor = 'black';
-            path.fillColor = cp.history[cp.history.length - 1];
-            path.add(event.point);
-        }
-
-        function onMouseDrag(event) {
-            var step = event.delta / 2;
-            step.angle += 90;
-        
-            var top = event.middlePoint + step;
-            var bottom = event.middlePoint - step;
-
-            path.add(top);
-            path.insert(0, bottom);
-            path.smooth();
-        }
-
-        function onMouseUp(event) {
-            path.add(event.point);
-            path.closed = true;
-            path.smooth();
-        }
-    </script> -->
-
+	
     <div id="top-bar">
         <i class="material-icons" id="home" style="font-size:60px; margin-left: 30px;">home</i>
         <i class="material-icons" style="font-size:60px; margin-left: 20px;">menu</i>
