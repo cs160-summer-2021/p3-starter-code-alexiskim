@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Flat Brush</title>
+    <title>Brush Functionality</title>
 
     <script type="text/javascript" src="{% static 'coloring/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
@@ -89,9 +89,11 @@
 		}
 		}
 
+        
 
 		window.onload = function() {
 			var canvas = document.getElementById('myCanvas');
+            var type = 1;
 
 			// coloring page
 			var mandala = {
@@ -107,23 +109,53 @@
 				$container: $('#color-palette')
 			}
 
+            $("#brush").click(function() {
+                type = 1;
+            });
+            
+            $("#pencil").click(function() {
+                type = 2;
+            });
+
+            $("#bucket").click(function() {
+                type = 3;
+            });
+
 			function myCustomInteraction() {
                 var tool = new paper.Tool()
                 tool.fixedDistance = 100;
                 var path;
+
                 tool.onMouseDown = function(event) {
-                    path = new paper.Path();
-                    path.strokeWidth = 10;
-                    path.strokeColor = cp.history[cp.history.length - 1];
-                    path.add(event.point);
+                    if (type == 1) {
+                        path = new paper.Path();
+                        path.strokeWidth = 10;
+                        path.strokeColor = cp.history[cp.history.length - 1];
+                        path.add(event.point);
+                    }
+                    else if (type == 2) {
+                        path = new paper.Path();
+                        path.strokeWidth = 2;
+                        path.strokeColor = cp.history[cp.history.length - 1];
+                    }
+                    else {
+                        var hit = mandala.item.hitTest(event.point, { tolerance: 10, fill: true });
+                        if (hit) {
+                                // Color pallette keeps track of the full history of colors, though we
+                                // only color in with the most-recent color.
+                            hit.item.fillColor = cp.history[cp.history.length - 1];
+                        }
+                    }
+                    
                 }
                 tool.onMouseDrag = function(event) {
                     path.add(event.point);
-                    path.smooth();
                 }
-                tool.onMouseUp = function(event) {
-                    // path.smooth();
-                }
+
+                //undo button
+                document.getElementById("undo").onclick = function(){
+                    path.remove();
+                };
 			}
 
 			// create a color palette with the given colors
@@ -178,15 +210,15 @@
     <div id="top-bar">
         <i class="material-icons" id="home" style="font-size:60px; margin-left: 30px;">home</i>
         <i class="material-icons" style="font-size:60px; margin-left: 20px;">menu</i>
-        <i class="material-icons" style="font-size:60px; margin-left: 750px;">undo</i>
+        <i id="undo" class="material-icons" style="font-size:60px; margin-left: 750px;">undo</i>
         <i class="material-icons" style="font-size:60px; margin-left: 30px;">redo</i>
 
 		<div class="dropdown">
 			<i onclick="showContent()" class="dropbtn material-icons" style="font-size:60px; margin-left: 20px;">brush</i>
 			<div id="myDropdown" class="dropdown-content">
-				<i class='fas fa-pen material-icons' style='font-size:50px'></i>
-				<i class='fas fa-paint-brush material-icons' style='font-size:50px'></i>
-				<i class="material-icons" style="font-size:60px">format_color_fill</i>
+				<i id="pencil" class='fas fa-pen material-icons' style='font-size:50px'></i>
+				<i id="brush" class='fas fa-paint-brush material-icons' style='font-size:50px'></i>
+				<i id="bucket" class="material-icons" style="font-size:60px">format_color_fill</i>
 			</div>
 		</div>
 

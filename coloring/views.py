@@ -15,5 +15,8 @@ def flat_brush(request):
 def bucket(request):
     return render(request, 'coloring/bucket.html')
 
+def brush(request):
+    return render(request, 'coloring/brush.html')
+
 def home(request):
     return render(request, 'coloring/home.html')
