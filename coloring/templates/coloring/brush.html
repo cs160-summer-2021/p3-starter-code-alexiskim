@@ -63,6 +63,10 @@
 		}
 		/* Show the dropdown menu */
 		.show {display:block;}
+
+        .selected {
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -109,36 +113,66 @@
 				$container: $('#color-palette')
 			}
 
+            $("#menu-brush").click(function() {
+                $( "#eraser" ).removeClass( "selected" );
+                $( "#menu-brush" ).addClass( "selected" );
+            });
+
             $("#brush").click(function() {
                 type = 1;
+                $( "#pencil" ).removeClass( "selected" );
+                $( "#eraser" ).removeClass( "selected" );
+                $( "#bucket" ).removeClass( "selected" );
+
+                $( "#brush" ).addClass( "selected" );
             });
             
             $("#pencil").click(function() {
                 type = 2;
+                $( "#brush" ).removeClass( "selected" );
+                $( "#eraser" ).removeClass( "selected" );
+                $( "#bucket" ).removeClass( "selected" );
+
+                $( "#pencil" ).addClass( "selected" );
             });
 
             $("#bucket").click(function() {
                 type = 3;
+                $( "#brush" ).removeClass( "selected" );
+                $( "#pencil" ).removeClass( "selected" );
+                $( "#eraser" ).removeClass( "selected" );
+
+                $( "#bucket" ).addClass( "selected" );
+            });
+
+            $("#eraser").click(function() {
+                type = 4;
+                $( "#brush" ).removeClass( "selected" );
+                $( "#pencil" ).removeClass( "selected" );
+                $( "#bucket" ).removeClass( "selected" );
+                $( "#menu-brush" ).removeClass( "selected" );
+
+                $( "#eraser" ).addClass( "selected" );
             });
 
 			function myCustomInteraction() {
                 var tool = new paper.Tool()
-                tool.fixedDistance = 100;
+                // tool.fixedDistance = 100;
+                tool.minDistance = 10;
                 var path;
 
                 tool.onMouseDown = function(event) {
                     if (type == 1) {
                         path = new paper.Path();
-                        path.strokeWidth = 10;
+                        path.strokeWidth = 15;
                         path.strokeColor = cp.history[cp.history.length - 1];
-                        path.add(event.point);
                     }
                     else if (type == 2) {
                         path = new paper.Path();
                         path.strokeWidth = 2;
                         path.strokeColor = cp.history[cp.history.length - 1];
                     }
-                    else {
+                    else if (type == 3) {
                         var hit = mandala.item.hitTest(event.point, { tolerance: 10, fill: true });
                         if (hit) {
                                 // Color pallette keeps track of the full history of colors, though we
@@ -149,7 +183,13 @@
                     
                 }
                 tool.onMouseDrag = function(event) {
-                    path.add(event.point);
+                    if (type == 1 || type == 2) {
+                        path.add(event.point);
+                        path.smooth();
+                    }
+                    else if (type == 4) {
+                        path.removeSegment(0);
+                    }
                 }
 
                 //undo button
@@ -214,7 +254,7 @@
         <i class="material-icons" style="font-size:60px; margin-left: 30px;">redo</i>
 
 		<div class="dropdown">
-			<i onclick="showContent()" class="dropbtn material-icons" style="font-size:60px; margin-left: 20px;">brush</i>
+			<i onclick="showContent()" id="menu-brush" class="dropbtn material-icons" style="font-size:60px; margin-left: 20px;">brush</i>
 			<div id="myDropdown" class="dropdown-content">
 				<i id="pencil" class='fas fa-pen material-icons' style='font-size:50px'></i>
 				<i id="brush" class='fas fa-paint-brush material-icons' style='font-size:50px'></i>
@@ -222,7 +262,7 @@
 			</div>
 		</div>
 
-		<i class='fas fa-eraser material-icons' style='font-size:45px; margin-top: 0; padding-bottom: 20px;margin-left: 5px'></i>
+		<i id="eraser" class='fas fa-eraser material-icons' style='font-size:45px; margin-top: 0; padding-bottom: 20px;margin-left: 5px'></i>
         <i class="material-icons" style="font-size:60px;margin-left: 30px;">color_lens</i>
     </div>
     <canvas id="myCanvas" width="1000" height="700"></canvas>
